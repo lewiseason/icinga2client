@@ -5,32 +5,39 @@ Usage:
     i2 [--version] [--help] <command> [<arguments>...]
 
 Commands:
-    downtime
+    configure           Interactively prompt for configuration options
+    downtime            Schedule and remove downtime for various config objects
 """
 
 from docopt import docopt, DocoptExit
 import importlib
 
-from icinga2client.api import ApiClient, Comment
+from ..api import ApiClient, Comment
+from ..config import Config
 
 doc = __doc__
 
-def main():
-    client = ApiClient('', verify=False)
-    client.authenticate(username='', password='')
+COMMANDS = ['configure', 'downtime']
+COMMANDS_NO_CONFIG = ['configure']
 
+def main():
     arguments = docopt(doc, version="TODO", options_first=True)
 
     command = arguments['<command>']
     command_arguments = [command] + arguments['<arguments>']
 
-    try:
-        module = 'icinga2client.cli.{}'.format(command)
-        invoke = importlib.import_module(module).invoke
+    config = Config()
 
-        print invoke(client, command_arguments)
-
-    except ImportError:
-        # Warning: this is a little insidious, in that any ImportError
-        # raised within the cli module will also be caught here.
+    if command not in COMMANDS:
         raise DocoptExit('Unknown command: ' + command)
+
+    if command not in COMMANDS_NO_CONFIG and len(config.keys()) == 0:
+        raise DocoptExit('Not configured, try running: i2 configure')
+
+    client = ApiClient(config.url, verify=False)
+    client.authenticate(username=config.username, password=config.password)
+
+    module = 'icinga2client.cli.{}'.format(command)
+    invoke = importlib.import_module(module).invoke
+
+    invoke(client, command_arguments)

@@ -2,7 +2,7 @@ import json
 import requests as requests_lib
 from multipledispatch import dispatch
 
-from .helpers import dict_no_nones, to_timestamp
+from ..helpers.data import dict_no_nones, to_timestamp
 
 class RequestManager:
     api_prefix = 'v1'

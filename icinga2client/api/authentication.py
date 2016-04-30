@@ -1,4 +1,4 @@
-from .helpers import dict_has_all
+from ..helpers.data import dict_has_all
 
 class AuthenticationManager:
     def authenticate_password(self, args):

@@ -1,7 +1,7 @@
 from . import filters as f
 from .request_manager import RequestManager
 from .authentication import AuthenticationManager
-from .helpers import deep_merge
+from ..helpers.data import deep_merge
 
 
 class ApiClient:

@@ -12,17 +12,20 @@ Options:
 """
 
 from docopt import docopt
-from ..api.helpers import FriendlyArguments
+from ..helpers.data import FriendlyArguments
+from ..helpers.interactive import prompt_for_comment
 
 doc = __doc__
 
 # TODO
 from ..api import Comment
-c = Comment('test', 'test')
 
 def invoke(client, arguments):
     canonical = docopt(doc, argv=arguments, options_first=False)
     args = FriendlyArguments(canonical)
+
+    if not args.remove:
+        c = prompt_for_comment()
 
     if args.host:
         if args.remove:

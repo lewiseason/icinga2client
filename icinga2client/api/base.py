@@ -33,7 +33,7 @@ class ApiClient(APIMethodsMixin):
         return '{}/{}/{}'.format(self.base_uri.rstrip('/'), self.api_prefix,
                                  command.lstrip('/'))
 
-    def request(self, method, command, data=None, headers={}):
+    def request(self, method, command, data=None, headers={}, **kwargs):
         """
         Make an API request.
 

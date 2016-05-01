@@ -27,9 +27,13 @@ def prompt(question, default=None, hidden=False):
         return response
 
 
-def prompt_for_comment():
+def prompt_for_comment(username=None, comment=False):
     # TODO: Add handling to work out who the current user is.
-    username = prompt('Name')
-    comment = prompt('Comment')
+
+    if not username:
+        username = prompt('Operator Name')
+
+    if not comment:
+        comment = prompt('Comment')
 
     return Comment(username, comment)

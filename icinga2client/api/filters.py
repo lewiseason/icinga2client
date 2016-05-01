@@ -8,8 +8,8 @@ def service(hostname, service):
 
 
 def hostgroup(group):
-    return '"{}" in host.group'.format(group)
+    return '"{}" in host.groups'.format(group)
 
 
 def servicegroup(group):
-    return '"{}" in service.group'.format(group)
+    return '"{}" in service.groups'.format(group)

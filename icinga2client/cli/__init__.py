@@ -2,7 +2,10 @@
 icinga2 command-line interface
 
 Usage:
-    i2 [--version] [--help] <command> [<arguments>...]
+    i2 [--version] [--help] [--porcelain] <command> [<arguments>...]
+
+Options:
+    --porcelain -p      Produce machine-readable output
 
 Commands:
     configure           Interactively prompt for configuration options
@@ -41,4 +44,4 @@ def main():
     module = 'icinga2client.cli.{}'.format(command)
     invoke = importlib.import_module(module).invoke
 
-    invoke(client, command_arguments)
+    invoke(client, command_arguments, porcelain=arguments['--porcelain'])

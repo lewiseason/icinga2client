@@ -44,6 +44,9 @@ class FriendlyArguments:
     def __init__(self, arguments):
         self.arguments = arguments
 
+    def __getitem__(self, attr):
+        return self.__getattr__(attr)
+
     def __getattr__(self, attr):
         for candidate in self._build_possible_attrs(attr):
             if candidate in self.arguments:

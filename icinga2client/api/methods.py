@@ -34,6 +34,8 @@ class APIMethodsMixin:
 
         if duration:
             duration = to_timedelta(duration).seconds
+        else:
+            duration = False
 
         return self.request('post', 'actions/schedule-downtime', {
             'type': object_type.title(),

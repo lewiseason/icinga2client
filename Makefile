@@ -17,3 +17,7 @@ docs: apidocs
 .PHONY: apidocs
 apidocs:
 	sphinx-apidoc -o $(DOC_APIDIR) -T -e $(SRC_PATH)
+
+.PHONY: lint
+lint:
+	pep8 icinga2client; true

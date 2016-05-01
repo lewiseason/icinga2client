@@ -16,7 +16,8 @@ class ApiClient(APIMethodsMixin):
 
     def __init__(self, base_uri, verify=True):
         """
-        :param str base_uri: URI of icinga2 api. Typically https://some-address:5665
+        :param str base_uri: URI of icinga2 api.
+            Typically https://some-address:5665
         :param bool verify: Whether or not to verify TLS certificate trust
         """
 

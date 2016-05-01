@@ -1,15 +1,17 @@
-""".. _remove-downtime: http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/icinga2-api#icinga2-api-actions-remove-downtime
+"""
+.. _remove-downtime: http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/icinga2-api#icinga2-api-actions-remove-downtime
 .. _schedule-downtime: http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/icinga2-api#icinga2-api-actions-schedule-downtime
 .. _downtimes: http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/advanced-topics#downtimes
 .. _filter: http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/icinga2-api#icinga2-api-filters
 .. _parsedatetime: https://pypi.python.org/pypi/parsedatetime
-"""
+"""  # nopep8
 
 from ..helpers.data import to_timestamp, to_timedelta
 
+
 class APIMethodsMixin:
-    def schedule_downtime(self, object_type, object_filter, start, end, comment,
-                          duration=False, trigger_name=None):
+    def schedule_downtime(self, object_type, object_filter, start, end,
+                          comment, duration=False, trigger_name=None):
         """
         Schedule downtime for hosts and services.
 

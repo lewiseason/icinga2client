@@ -17,11 +17,10 @@
 from docopt import docopt
 from ..helpers.data import FriendlyArguments
 from ..helpers.interactive import prompt_for_comment
+from ..api import Comment
 
 doc = __doc__.replace('::', '').strip()
 
-# TODO
-from ..api import Comment
 
 def invoke(client, arguments):
     canonical = docopt(doc, argv=arguments, options_first=False)

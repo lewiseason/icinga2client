@@ -16,7 +16,7 @@ def prompt(question, default=None, hidden=False):
         question += ': '
 
     if hidden:
-        default  = None
+        default = None
         response = getpass(question)
     else:
         response = input(question)
@@ -26,9 +26,10 @@ def prompt(question, default=None, hidden=False):
     else:
         return response
 
+
 def prompt_for_comment():
     # TODO: Add handling to work out who the current user is.
     username = prompt('Name')
-    comment  = prompt('Comment')
+    comment = prompt('Comment')
 
     return Comment(username, comment)

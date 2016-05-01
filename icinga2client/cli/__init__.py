@@ -20,6 +20,7 @@ doc = __doc__
 COMMANDS = ['configure', 'downtime']
 COMMANDS_NO_CONFIG = ['configure']
 
+
 def main():
     arguments = docopt(doc, version="TODO", options_first=True)
 
@@ -34,7 +35,7 @@ def main():
     if command not in COMMANDS_NO_CONFIG and len(config.keys()) == 0:
         raise DocoptExit('Not configured, try running: i2 configure')
 
-    client = ApiClient(config.url, verify=False)
+    client = ApiClient(config.url, verify=False)  # TODO: Verify option
     client.authenticate(username=config.username, password=config.password)
 
     module = 'icinga2client.cli.{}'.format(command)

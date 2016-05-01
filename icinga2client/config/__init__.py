@@ -1,6 +1,7 @@
 import os
 import json
 
+
 class Config:
     config_path = '~/.i2rc'
     config = {}
@@ -23,7 +24,7 @@ class Config:
         if self.dirty:
             with open(self.config_path, 'a+') as f:
                 self.config = json.loads(f.read() or '{}')
-                self.dirty  = False
+                self.dirty = False
 
     def _write_changes_back(self):
         with open(self.config_path, 'wb+') as f:

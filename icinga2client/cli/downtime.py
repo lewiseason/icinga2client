@@ -1,11 +1,14 @@
 """
-Usage:
+::
+
+  Usage:
     i2 downtime [remove] host <hostname> [options] [--all-services]
     i2 downtime [remove] service <hostname> <service> [options]
     i2 downtime [remove] hostgroup <group> [options] [--all-services]
     i2 downtime [remove] servicegroup <group> [options]
+    i2 downtime remove <downtime>
 
-Options:
+  Options:
     --start=<timespec>          Start time [default: now]
     --end=<timespec>            End time [default: +2hours]
     --duration=<duration>       Duration
@@ -15,7 +18,7 @@ from docopt import docopt
 from ..helpers.data import FriendlyArguments
 from ..helpers.interactive import prompt_for_comment
 
-doc = __doc__
+doc = __doc__.replace('::', '').strip()
 
 # TODO
 from ..api import Comment

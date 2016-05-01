@@ -1,3 +1,12 @@
+"""
+.. _remove-downtime: http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/icinga2-api#icinga2-api-actions-remove-downtime
+.. _schedule-downtime: http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/icinga2-api#icinga2-api-actions-schedule-downtime
+.. _downtimes: http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/advanced-topics#downtimes
+.. _filter: http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/icinga2-api#icinga2-api-filters
+.. _parsedatetime: https://pypi.python.org/pypi/parsedatetime
+
+"""
+
 import json
 import requests as requests_lib
 from multipledispatch import dispatch
@@ -25,18 +34,6 @@ class RequestManager:
             command=command.lstrip('/'))
 
     def request(self, method, command, data=None, headers={}):
-        """
-        Make an API request.
-
-        :param str method: The HTTP method/verb to use
-        :param str command: The last part of the URI after the prefix, e.g.: ``objects/hosts``
-        :param dict data: Data to be passed as the request body.
-            Note: If ``data`` is supplied, and ``method`` is ``get``, the method will be
-            rewritten, and the X-HTTP-Method-Override header will be set.
-        :param dict headers: Any additional headers/overrides should be passed here
-        :return: JSON-decoded response from the server
-        :rtype: dict
-        """
 
         method = method.lower()
 
@@ -64,6 +61,25 @@ class RequestManager:
         return response.json()
 
     def schedule_downtime(self, object_type, object_filter, start, end, comment, duration=False):
+        """
+        Schedule a downtime for hosts and services.
+
+        See `schedule-downtime`_ documentation for further information, and
+        `downtimes`_ for information about fixed and flexible downtimes.
+
+        :param str object_type: The object type to perform the action on.
+            Either ``Host`` or ``Service``.
+        :param str object_filter: A `filter`_ to apply when scheduling
+            the downtime.
+        :param str start: A timespec marking the beginning of the downtime,
+            in a valid `parsedatetime`_ format.
+        :param str end: A timespec marking the end of the downtime,
+            in a valid `parsedatetime`_ format.
+        :param Comment comment: Comment object associated with the downtime.
+        :param str duration: A timespec indicating the maximum duration of the
+            downtime. This implies a ``flexible`` downtime.
+        :param str trigger_name: Sets the trigger for a triggered downtime.
+        """
         return self.request('post', 'actions/schedule-downtime', {
             'type': object_type.title(),
             'filter': object_filter,
@@ -77,6 +93,12 @@ class RequestManager:
 
     @dispatch(str, str)
     def remove_downtime(self, object_type, object_filter):
+        """
+        Remove a named downtime. See also :py:meth:`remove_downtime_filter`.
+
+        See `remove-downtime`_ documentation for further information.
+
+        :param str downtime: The name of the downtime to remove.
         return self.request('post', 'actions/remove-downtime', {
             'type': object_type.title(),
             'filter': object_filter,
@@ -84,6 +106,15 @@ class RequestManager:
 
     @dispatch(list)
     def remove_downtime(self, downtimes):
+        """
+        Remove downtimes matching the specified filter.
+        See also :py:meth:`remove_downtime`.
+
+        :param str object_type: The object type to perform the action on.
+            Either ``Host`` or ``Service``.
+        :param str object_filter: A `filter`_ to apply.
+        """
+
         return self.request('post', 'actions/remove-downtime', {
             'downtime': downtimes,
         })
@@ -110,15 +141,6 @@ class RequestManager:
         })
 
     def objects(self, object_type, filter=None, attrs=None, joins=None):
-        """
-        Retrieve a list of configuration objects from the server,
-        with options to filter, limit attributes and side-load related objects.
-
-        :param str object_type: The plural of the object type to be queried
-        :param str filter: Filter the returned objects according to this string
-        :param list attrs: Only return these attributes of each object
-        :param list joins: Side-load objects or attributes
-        """
 
         return self.request('get', 'objects/' + object_type.lower(), dict_no_nones({
             'filter': filter,
@@ -127,11 +149,5 @@ class RequestManager:
         }))
 
     def status(self, component=None):
-        """
-        Fetch application status from the server.
-
-        :param str component: If specified, limit status information to the specified component
-        """
-
         command = 'status/' + component if component else 'status'
         return self.request('get', command)

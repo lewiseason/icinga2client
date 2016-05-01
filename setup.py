@@ -4,7 +4,6 @@ requirements = [
     'requests',
     'docopt',
     'parsedatetime',
-    'multipledispatch',
 ]
 
 description = '''

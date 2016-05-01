@@ -7,6 +7,11 @@ calendar = parsedatetime.Calendar()
 def to_timestamp(string):
     return time.mktime(calendar.parse(string)[0])
 
+def to_timedelta(string):
+    now = datetime.datetime.now()
+    then = calendar.parseDT(string, sourceTime=now)[0]
+    return then - now
+
 def dict_has_all(d, keys):
     return all(k in d for k in keys)
 

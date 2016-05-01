@@ -1,11 +1,18 @@
+import json
+import requests as requests_lib
+
 from . import filters as f
-from .request_manager import RequestManager
+from .methods import APIMethodsMixin
 from .authentication import AuthenticationManager
-from ..helpers.data import deep_merge
+from ..helpers.data import deep_merge, dict_no_nones
 
 
-class ApiClient:
-    global_request_parameters = {}
+class ApiClient(APIMethodsMixin):
+    api_prefix = 'v1'
+    default_headers = {
+        'Accept': 'application/json'
+    }
+    request_parameters = {}
 
     def __init__(self, base_uri, verify=True):
         """
@@ -13,78 +20,64 @@ class ApiClient:
         :param bool verify: Whether or not to verify TLS certificate trust
         """
 
-        self.request_manager = RequestManager(base_uri)
-        self.request_manager.set_option('verify', verify)
+        self.base_uri = base_uri
+        self.set_request_option('verify', verify)
 
         self.authentication_manager = AuthenticationManager()
 
-    def api_request(self, method, command, data=None, headers={}):
-        return self.request_manager.request(method, command, data=data, headers=headers)
+    def set_request_option(self, option, value):
+        self.request_parameters[option] = value
+
+    def url(self, command):
+        return '{}/{}/{}'.format(self.base_uri.rstrip('/'), self.api_prefix,
+                                 command.lstrip('/'))
+
+    def request(self, method, command, data=None, headers={}):
+        """
+        Make an API request.
+
+        :param str method: The HTTP verb used in the request.
+        :param str command: The path of the command, excluding the prefix.
+            For example: ``objects/hosts`` or ``actions/acknowledge-problem``.
+        :param object data: Additional request data. Must be serializable by
+            :func:`json.dumps`.
+        :param dict headers: Any additional HTTP headers.
+        """
+
+        method = method.lower()
+
+        if headers == {}:
+            final_headers = self.default_headers
+        else:
+            final_headers = self.default_headers.copy()
+            final_headers.update(headers)
+
+        if not kwargs.get('preserve_none'):
+            data = dict_no_nones(data)
+
+        params = {}
+        params.update(self.request_parameters)
+        params['headers'] = final_headers
+        params['data'] = json.dumps(data)
+
+        # if method == 'get' and data:
+        #     method = 'post'
+        #     headers['X-HTTP-Method-Override'] = 'get'
+
+        response = getattr(requests_lib, method)(self.url(command), **params)
+
+        try:
+            response.raise_for_status()
+
+        except Exception as e:
+            # TODO: err...
+            print(response.content)
+            raise e
+
+        return response.json()
 
     def authenticate(self, **kwargs):
         options = self.authentication_manager.authenticate(**kwargs)
 
         for key, val in options.items():
-            self.request_manager.set_option(key, val)
-
-    def __getattr__(self, attr):
-        if hasattr(self.request_manager, attr):
-            return getattr(self.request_manager, attr)
-        else:
-            object.__getattribute__(self, attr)
-
-    def schedule_host_downtime(self, hostname, start, end, comment, all_services=False, **kwargs):
-        host = self.schedule_downtime('Host', f.host(hostname), start, end, comment, **kwargs)
-        if all_services:
-            services = self.schedule_downtime('Service', f.host(hostname), start, end, comment, **kwargs)
-        else:
-            services = {}
-
-        return dict(deep_merge(host, services))
-
-    def remove_host_downtime(self, hostname, all_services=False):
-        host = self.remove_downtime('Host', f.host(hostname))
-        if all_services:
-            services = self.remove_downtime('Service', f.host(hostname))
-        else:
-            services = {}
-
-        return dict(deep_merge(host, services))
-
-    def schedule_service_downtime(self, hostname, service, start, end, comment, **kwargs):
-        return self.schedule_downtime('Service', f.service(hostname, service), start, end, comment, **kwargs)
-
-    def remove_service_downtime(self, hostname, service):
-        return self.remove_downtime('Service', f.service(hostname, service))
-
-    def schedule_hostgroup_downtime(self, group, start, end, comment, all_services=False, **kwargs):
-        host = self.schedule_downtime('Host', f.hostgroup(group), start, end, comment, **kwargs)
-        if all_services:
-            services = self.schedule_downtime('Service', f.hostgroup(group), start, end, comment, **kwargs)
-
-        return dict(deep_merge(host, services or []))
-
-    def remove_hostgroup_downtime(self, group, all_services=False):
-        host = self.remove_downtime('Host', f.hostgroup(group))
-        if all_services:
-            services = self.remove_downtime('Service', f.hostgroup(group))
-
-        return dict(deep_merge(host, services or []))
-
-    def schedule_servicegroup_downtime(self, group, start, end, comment, **kwargs):
-        return self.schedule_downtime('Service', f.servicegroup(group), start, end, comment, **kwargs)
-
-    def remove_servicegroup_downtime(self, group):
-        return self.remove_downtime('Service', f.servicegroup(group))
-
-    def acknowledge_host_problem(self, hostname, comment, **kwargs):
-        return self.acknowledge_problem('Host', f.host(hostname), comment, **kwargs)
-
-    def remove_host_acknowledgement(self, hostname):
-        return self.remove_acknowledgement('Host', f.host(hostname))
-
-    def acknowledge_service_problem(self, hostname, service, comment, **kwargs):
-        return self.acknowledge_problem('Service', f.service(hostname, service), comment, **kwargs)
-
-    def remove_service_acknowledgement(self, hostname, service):
-        return self.remove_acknowledgement('Service', f.service(hostname, service))
+            self.set_request_option(key, val)

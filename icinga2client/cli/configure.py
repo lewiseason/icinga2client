@@ -13,7 +13,7 @@ from ..helpers.interactive import prompt
 doc = __doc__
 
 
-def invoke(client, arguments):
+def invoke(client, arguments, **kwargs):
     config = Config()
 
     print("The answers to the following questions will be stored (plaintext) "

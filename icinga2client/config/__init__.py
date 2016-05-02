@@ -22,7 +22,7 @@ class Config:
 
     def _reload_if_required(self):
         if self.dirty:
-            with open(self.config_path, 'a+') as f:
+            with open(self.config_path, 'r+') as f:
                 self.config = json.loads(f.read() or '{}')
                 self.dirty = False
 

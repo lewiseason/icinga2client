@@ -3,9 +3,9 @@
 
   Usage:
     i2 downtime [remove] host <name> [--all-services] [options]
-    i2 downtime [remove] service <hostname> <name>
+    i2 downtime [remove] service <hostname> <name> [options]
     i2 downtime [remove] hostgroup <name> [--all-services] [options]
-    i2 downtime [remove] servicegroup <name>
+    i2 downtime [remove] servicegroup <name> [options]
     i2 downtime remove <name>
 
   Create Options:
@@ -90,8 +90,8 @@ def schedule_downtime(client, args, filter_fn, comment):
                                **common_args)))
 
     elif args.service:
-        response = fn('Service', filter_fn(args.hostname, args.name),
-                      **common_args)
+        return fn('Service', filter_fn(args.hostname, args.name),
+                  **common_args)
 
     elif args.servicegroup:
-        response = fn('Service', filter_fn(args.name), **common_args)
+        return fn('Service', filter_fn(args.name), **common_args)

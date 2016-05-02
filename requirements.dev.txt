@@ -1,2 +1,4 @@
 Sphinx==1.4.1
 pep8
+twine
+wheel

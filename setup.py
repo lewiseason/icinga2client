@@ -13,6 +13,7 @@ setup(
     name='icinga2client', version='0.1.0',
     description=description.strip(),
     author='Lewis Eason', author_email='me@lewiseason.co.uk',
+    url='https://github.com/lewiseason/icinga2client.git',
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Console',

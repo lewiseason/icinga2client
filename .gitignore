@@ -1,5 +1,11 @@
 *.pyc
 __pycache__
 *.egg-info
+
+# Documentation
 /docs/build
 /docs/source/api
+
+# Builds
+/build
+/dist

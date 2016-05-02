@@ -42,6 +42,18 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
 
+def run_apidoc(*args):
+    from sphinx.apidoc import main
+
+    cur_dir = os.path.abspath(os.path.dirname(__file__))
+    output_path = os.path.join(cur_dir, 'api')
+    module_path = os.path.join(cur_dir, '../../icinga2client')
+
+    main(['-T', '-e', '-o', output_path, module_path])
+
+
+def setup(app):
+    app.connect('builder-inited', run_apidoc)
 
 # -- Options for HTML output ----------------------------------------------
 

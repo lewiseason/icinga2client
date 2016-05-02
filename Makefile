@@ -11,12 +11,8 @@ clean:
 	find $(DOC_BUILDDIR) $(DOC_APIDIR) -mindepth 1 -delete
 
 .PHONY: docs
-docs: apidocs
+docs:
 	sphinx-build -b $(DOC_BUILDER) -j $(NPROCS) -q $(DOC_SOURCEDIR) $(DOC_BUILDDIR)
-
-.PHONY: apidocs
-apidocs:
-	sphinx-apidoc -o $(DOC_APIDIR) -T -e $(SRC_PATH)
 
 .PHONY: lint
 lint:

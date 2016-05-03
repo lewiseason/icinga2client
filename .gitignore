@@ -9,3 +9,6 @@ __pycache__
 # Builds
 /build
 /dist
+
+# Exuberant Ctags
+/tags

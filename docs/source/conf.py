@@ -2,6 +2,7 @@
 
 import sys
 import os
+from icinga2client.version import project, version
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #needs_sphinx = '1.0'
@@ -22,12 +23,11 @@ templates_path = ['.templates']
 source_suffix = '.rst'
 master_doc = 'index'
 
-# TODO: Pull this info from the correct place.
-project = u'Icinga2 Client'
+project = project
 copyright = u'2016, Lewis Eason'
 author = u'Lewis Eason'
-version = u'0.1.1'
-release = u'0.1.1'
+version = version
+release = version
 
 language = None
 
@@ -68,10 +68,6 @@ html_theme = 'classic'
 
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []
-
-# The name for this set of Sphinx documents.
-# "<project> v<release> documentation" by default.
-#html_title = u'Icinga2 Client v0.1.1'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #html_short_title = None

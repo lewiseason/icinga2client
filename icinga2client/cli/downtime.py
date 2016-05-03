@@ -20,13 +20,12 @@
 """
 
 from docopt import docopt
-from ..helpers.data import FriendlyArguments, deep_merge
+from ..helpers.data import FriendlyArguments, deep_merge, parse_docstring
 
 from ..helpers.interactive import prompt_for_comment
 from ..api import filters as f
 
-# TODO: This will be required everywhere
-doc = __doc__.replace('::', '').strip()
+doc = parse_docstring(__doc__)
 
 
 def invoke(client, arguments, **kwargs):

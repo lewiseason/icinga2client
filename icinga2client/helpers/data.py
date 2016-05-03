@@ -5,6 +5,10 @@ import time
 calendar = parsedatetime.Calendar()
 
 
+def parse_docstring(doc):
+    return doc.replace('::', '').strip()
+
+
 def to_timestamp(string):
     return time.mktime(calendar.parse(string)[0])
 

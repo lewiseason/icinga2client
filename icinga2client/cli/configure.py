@@ -1,16 +1,18 @@
 """
 Interactively configure the client.
 
-Usage:
+::
+
+  Usage:
     i2 configure
 """
 
 from docopt import docopt
 from ..config import Config
 from ..helpers.interactive import prompt
+from ..helpers.data import parse_docstring
 
-
-doc = __doc__
+doc = parse_docstring(__doc__)
 
 
 def invoke(client, arguments, **kwargs):

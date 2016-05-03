@@ -5,6 +5,7 @@ Welcome to Icinga2 Client's documentation!
    :maxdepth: 1
 
    Low-level API methods <api/icinga2client.api.methods>
+   Command-line package <api/icinga2client.cli>
 
 Indices and tables
 ==================

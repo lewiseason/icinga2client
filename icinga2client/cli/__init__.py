@@ -1,13 +1,15 @@
 """
 icinga2 command-line interface
 
-Usage:
+::
+
+  Usage:
     i2 [--version] [--help] [--porcelain] <command> [<arguments>...]
 
-Options:
+  Options:
     --porcelain -p      Produce machine-readable output
 
-Commands:
+  Commands:
     configure           Interactively prompt for configuration options
     downtime            Schedule and remove downtime for various config objects
 """
@@ -17,15 +19,17 @@ import importlib
 
 from ..api import ApiClient, Comment
 from ..config import Config
+from ..helpers.data import parse_docstring
 
-doc = __doc__
+doc = parse_docstring(__doc__)
 
 COMMANDS = ['configure', 'downtime']
+version_string = ' '.join([project, version])
 COMMANDS_NO_CONFIG = ['configure']
 
 
 def main():
-    arguments = docopt(doc, version="TODO", options_first=True)
+    arguments = docopt(doc, version=version_string, options_first=True)
 
     command = arguments['<command>']
     command_arguments = [command] + arguments['<arguments>']

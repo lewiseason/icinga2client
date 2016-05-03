@@ -11,6 +11,7 @@ icinga2 command-line interface
 
   Commands:
     configure           Interactively prompt for configuration options
+    acknowledge         Acknowledge/unacknowledge host and service problems
     downtime            Schedule and remove downtime for various config objects
 """
 
@@ -18,13 +19,15 @@ from docopt import docopt, DocoptExit
 import importlib
 
 from ..api import ApiClient, Comment
+from ..version import project, version
 from ..config import Config
 from ..helpers.data import parse_docstring
 
 doc = parse_docstring(__doc__)
 
-COMMANDS = ['configure', 'downtime']
 version_string = ' '.join([project, version])
+
+COMMANDS = ['configure', 'downtime', 'acknowledge']
 COMMANDS_NO_CONFIG = ['configure']
 
 

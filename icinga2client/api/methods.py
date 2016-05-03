@@ -2,6 +2,8 @@
 .. _remove-downtime: http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/icinga2-api#icinga2-api-actions-remove-downtime
 .. _schedule-downtime: http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/icinga2-api#icinga2-api-actions-schedule-downtime
 .. _downtimes: http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/advanced-topics#downtimes
+.. _acknowledge-problem: http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/icinga2-api#icinga2-api-actions-acknowledge-problem
+.. _remove-acknowledgement: http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/icinga2-api#icinga2-api-actions-remove-acknowledgement
 .. _filter: http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/icinga2-api#icinga2-api-filters
 .. _parsedatetime: https://pypi.python.org/pypi/parsedatetime
 """  # nopep8
@@ -74,4 +76,54 @@ class APIMethodsMixin:
         return self.request('post', 'actions/remove-downtime', {
             'type': object_type.title(),
             'filter': object_filter,
+        })
+
+    def acknowledge_problem(self, object_type, object_filter, comment,
+                            expiry=None, sticky=True, notify=True):
+        """
+        Acknowledge a host or service problem.
+
+        See `acknowledge-problem`_ documentation for further information.
+
+        :param str object_type: The object type to acknowledge.
+            Either ``Host`` or ``Service``.
+        :param str object_filter: A `filter`_ to apply when acknowledging
+            the problem.
+        :param Comment comment: Comment associated with the acknowledgement.
+        :param str expiry: A timespec marking the expiry time of the
+            notification, in a valid `parsedatetime`_ format.
+        :param bool sticky: Whether the notification is sticky. If so, it will
+            only be cleared when the host or service returns to a healthy
+            state, otherwise the ack will be cleared on any state change.
+        :param bool notify: Whether to generate any configured notifications
+            associated with the host or service.
+        """
+
+        if expiry:
+            expiry = to_timestamp(expiry)
+
+        return self.request('post', 'actions/acknowledge-problem', {
+            'type': object_type.title(),
+            'filter': object_filter,
+            'author': comment.author,
+            'comment': comment.text,
+            'expiry': expiry,
+            'sticky': sticky,
+            'notify': notify,
+        })
+
+    def remove_acknowledgement(self, object_type, object_filter):
+        """
+        Remove acknowledgements on a host or service.
+
+        See `remove-acknowledgement`_ documentation for further information.
+
+        :param str object_type: The object type to remove acknowledgements
+            for. Either ``Host`` or ``Service``.
+        :param str object_filter: A `filter`_ to apply when removing
+            the problem acknowledgement.
+        """
+        return self.request('post', 'actions/remove-acknowledgement', {
+            'type': object_type.title(),
+            'filter': object_filter
         })
